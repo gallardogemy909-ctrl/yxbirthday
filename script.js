@@ -61,6 +61,9 @@ document.addEventListener('click', (e) => {
     // 忽略音乐控制区域的点击
     if (e.target.closest('.music-controls') || e.target.closest('.music-btn') || e.target.closest('.switch-btn')) return;
 
+    // 忽略重新开始按钮的点击
+    if (e.target.closest('.restart-btn')) return;
+
     // 步骤4时点击蛋糕，跳到第5步
     if (currentStep === 4 && e.target.closest('#cake')) {
         blowCandles();
@@ -398,9 +401,56 @@ document.addEventListener('touchstart', (e) => {
 
 // 页面可见性变化时暂停/恢复音乐
 document.addEventListener('visibilitychange', () => {
+    const currentAudio = songs[currentSong].element;
     if (document.hidden && isPlaying) {
-        bgMusic.pause();
+        currentAudio.pause();
     } else if (!document.hidden && isPlaying) {
-        bgMusic.play().catch(e => console.log('Audio play failed:', e));
+        currentAudio.play().catch(e => console.log('Audio play failed:', e));
     }
 });
+
+// 重新开始动画
+function restartAnimation() {
+    // 隐藏当前步骤
+    const currentElement = document.getElementById(`step${currentStep}`);
+    currentElement.classList.remove('step-active');
+
+    // 重置状态
+    currentStep = 1;
+
+    // 清除打字机文字
+    const typewriter = document.getElementById('typewriter');
+    if (typewriter) {
+        typewriter.textContent = '';
+    }
+
+    // 重置蜡烛火焰
+    const flames = document.querySelectorAll('#step4 .flame');
+    flames.forEach(flame => {
+        flame.style.opacity = '1';
+        flame.style.transform = 'translateX(-50%) scale(1)';
+    });
+
+    // 停止爱心飘落
+    if (heartInterval) {
+        clearInterval(heartInterval);
+        heartInterval = null;
+    }
+
+    // 清除爱心容器
+    const heartsContainer = document.getElementById('hearts-container');
+    heartsContainer.innerHTML = '';
+
+    // 显示第一步
+    const firstStep = document.getElementById('step1');
+    firstStep.classList.add('step-active');
+
+    // 更新指示器
+    updateStepIndicator();
+
+    // 重置音乐到开头
+    songs[1].element.currentTime = 0;
+    songs[2].element.currentTime = 0;
+    currentSong = 1;
+    updateSongDisplay();
+}
