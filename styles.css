@@ -17,6 +17,12 @@ body {
     font-family: 'ZCOOL XiaoWei', serif;
     overflow: hidden;
     cursor: pointer;
+    /* 消除移动端点击蓝色高亮 */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 @keyframes gradientBG {
@@ -649,6 +655,32 @@ body {
     margin-top: 30px;
     color: rgba(255, 255, 255, 0.6);
     animation: promptPulse 2s ease infinite;
+}
+
+/* 重新开始按钮 */
+.restart-btn {
+    margin-top: 25px;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ff6b9d, #ff85a1);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
+    transition: all 0.3s ease;
+    animation: fadeInUp 1s ease 1.5s both;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.restart-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(255, 107, 157, 0.6);
+}
+
+.restart-btn:active {
+    transform: scale(0.98);
 }
 
 /* ========== 音乐控制面板 ========== */
