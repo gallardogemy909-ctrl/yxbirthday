@@ -67,6 +67,8 @@ document.addEventListener('click', (e) => {
     // 步骤4时点击蛋糕，跳到第5步
     if (currentStep === 4 && e.target.closest('#cake')) {
         blowCandles();
+        // 蛋糕点击时的爱心爆发
+        createHeartBurst(e.clientX, e.clientY);
         nextStep();
         return;
     }
@@ -76,6 +78,12 @@ document.addEventListener('click', (e) => {
         createFirework(e.clientX, e.clientY);
         createHeartBurst(e.clientX, e.clientY);
         return;
+    }
+
+    // 前几步点击时也有小烟花效果（增加互动性）
+    if (currentStep >= 1 && currentStep <= 5) {
+        // 小型烟花效果
+        createClickSparkle(e.clientX, e.clientY);
     }
 
     // 其他步骤点击进入下一步
@@ -380,6 +388,48 @@ function createFirework(x, y) {
         container.appendChild(particle);
 
         setTimeout(() => particle.remove(), 1200);
+    }
+}
+
+// 点击时的小烟花效果（前几步点击时使用）
+function createClickSparkle(x, y) {
+    const container = document.getElementById('fireworks-container');
+    const colors = ['#ffd700', '#ff8fab', '#a77bd4', '#ff6b9d', '#ffb6c1', '#87ceeb'];
+    const particleCount = 15;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = 6 + Math.random() * 8;
+
+        particle.style.cssText = `
+            position: fixed;
+            left: ${x}px;
+            top: ${y}px;
+            width: ${size}px;
+            height: ${size}px;
+            background: radial-gradient(circle, ${color} 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 0 ${size}px ${color};
+        `;
+
+        const angle = (Math.PI * 2 / particleCount) * i + Math.random() * 0.5;
+        const velocity = 30 + Math.random() * 50;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+
+        particle.animate([
+            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+        ], {
+            duration: 500 + Math.random() * 300,
+            easing: 'ease-out'
+        });
+
+        container.appendChild(particle);
+        setTimeout(() => particle.remove(), 800);
     }
 }
 
