@@ -25,7 +25,7 @@ let currentSong = 1; // 1 = 生日歌, 2 = 稻香
 // 歌曲信息
 const songs = {
     1: { name: '🎵 生日歌', element: null },
-    2: { name: '🎵 稻香', element: null }
+    2: { name: '🎸 添水的吉他弹唱', element: null }
 };
 
 // DOM元素
@@ -192,8 +192,19 @@ function switchSong() {
 // 更新歌曲显示
 function updateSongDisplay() {
     const songNameEl = document.getElementById('songName');
+    const guitarHint = document.getElementById('guitarHint');
     if (songNameEl) {
         songNameEl.textContent = songs[currentSong].name;
+    }
+    if (guitarHint) {
+        // 如果当前是生日歌，显示提示切换到吉他弹唱
+        if (currentSong === 1) {
+            guitarHint.style.display = 'block';
+            guitarHint.textContent = '💝 切换听添水的吉他弹唱';
+        } else {
+            guitarHint.style.display = 'block';
+            guitarHint.textContent = '🎵 正在播放：添水为你弹唱的歌 💕';
+        }
     }
 }
 
@@ -242,12 +253,18 @@ function createSmoke(flame) {
     }
 }
 
-// 打字机效果
+// 打字机效果 - 自动显示，速度适中
+let isTyping = false;
+
 function typeWriter() {
     const element = document.getElementById('typewriter');
     let wishIndex = 0;
     let charIndex = 0;
     let currentText = '';
+    isTyping = true;
+
+    const charSpeed = 40; // 每个字40ms，适中的速度
+    const lineDelay = 150; // 换行停顿
 
     function type() {
         if (wishIndex < wishes.length) {
@@ -255,13 +272,15 @@ function typeWriter() {
                 currentText += wishes[wishIndex].charAt(charIndex);
                 element.textContent = currentText;
                 charIndex++;
-                setTimeout(type, 60);
+                setTimeout(type, charSpeed);
             } else {
                 currentText += '\n';
                 wishIndex++;
                 charIndex = 0;
-                setTimeout(type, 300);
+                setTimeout(type, lineDelay);
             }
+        } else {
+            isTyping = false;
         }
     }
 
@@ -299,7 +318,8 @@ function createStars() {
     starsCreated = true;
 
     const container = document.getElementById('stars-container');
-    const starCount = 80;
+    const starCount = 60; // 减少星星数量以提升性能
+    const colors = ['#fff', '#ffd700', '#ff8fab', '#87ceeb', '#dda0dd'];
 
     for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -308,6 +328,19 @@ function createStars() {
         star.style.top = Math.random() * 100 + '%';
         star.style.animationDelay = Math.random() * 2 + 's';
         star.style.animationDuration = Math.random() * 3 + 2 + 's';
+
+        // 随机大小
+        const size = Math.random() * 3 + 2;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+
+        // 随机颜色（大部分是白色）
+        if (Math.random() > 0.7) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            star.style.background = color;
+            star.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+        }
+
         container.appendChild(star);
     }
 }
@@ -388,15 +421,102 @@ function createHeartBurst(x, y) {
     }
 }
 
-// 触摸设备支持
-document.addEventListener('touchstart', (e) => {
-    if (e.target.id === 'musicBtn' || e.target.closest('.music-btn')) return;
+// 触摸和拖动支持 - 改进版流畅拖尾效果
+let isDragging = false;
+let lastTrailTime = 0;
+const trailInterval = 25; // 更快的粒子生成
 
-    if (currentStep === 6) {
+// 创建拖动时的流畅拖尾粒子（更大更明显）
+function createTrailParticle(x, y) {
+    const container = document.getElementById('fireworks-container');
+    const colors = ['#ff8fab', '#ffd700', '#ff6b9d', '#ffb6c1', '#a77bd4', '#87ceeb', '#ff85a1'];
+
+    // 每次创建3个粒子，更明显
+    for (let i = 0; i < 3; i++) {
+        const particle = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = 10 + Math.random() * 15; // 更大的粒子
+
+        // 随机偏移
+        const offsetX = (Math.random() - 0.5) * 30;
+        const offsetY = (Math.random() - 0.5) * 30;
+
+        particle.style.cssText = `
+            position: fixed;
+            left: ${x + offsetX}px;
+            top: ${y + offsetY}px;
+            width: ${size}px;
+            height: ${size}px;
+            background: radial-gradient(circle, ${color} 0%, ${color}80 40%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 0 ${size}px ${color}, 0 0 ${size * 2}px ${color}60;
+        `;
+
+        container.appendChild(particle);
+
+        // 向下飘落并淡出
+        const moveX = (Math.random() - 0.5) * 80;
+        const moveY = 40 + Math.random() * 60;
+
+        particle.animate([
+            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+            { transform: `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(0)`, opacity: 0 }
+        ], {
+            duration: 600 + Math.random() * 300,
+            easing: 'ease-out'
+        });
+
+        setTimeout(() => particle.remove(), 900);
+    }
+}
+
+// 鼠标拖动
+document.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.music-controls') || e.target.closest('.restart-btn')) return;
+    isDragging = true;
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+
+    const now = Date.now();
+    if (now - lastTrailTime > trailInterval) {
+        createTrailParticle(e.clientX, e.clientY);
+        lastTrailTime = now;
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// 触摸拖动
+document.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.music-controls') || e.target.closest('.restart-btn')) return;
+    isDragging = true;
+
+    if (currentStep === 6 && !isTyping) {
         const touch = e.touches[0];
         createFirework(touch.clientX, touch.clientY);
         createHeartBurst(touch.clientX, touch.clientY);
     }
+}, { passive: true });
+
+document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    const now = Date.now();
+    if (now - lastTrailTime > trailInterval) {
+        createTrailParticle(touch.clientX, touch.clientY);
+        lastTrailTime = now;
+    }
+}, { passive: true });
+
+document.addEventListener('touchend', () => {
+    isDragging = false;
 });
 
 // 页面可见性变化时暂停/恢复音乐
@@ -417,6 +537,9 @@ function restartAnimation() {
 
     // 重置状态
     currentStep = 1;
+    typewriterSpeed = 60; // 重置打字速度
+    isTyping = false;
+    skipTyping = false;
 
     // 清除打字机文字
     const typewriter = document.getElementById('typewriter');
