@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 生日快乐 - 邢雨欣 🎂</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- 背景音乐 -->
+    <audio id="song1" loop>
+        <source src="birthday_song_piano.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="song2" loop>
+        <source src="birthday_song.m4a" type="audio/mp4">
+    </audio>
+
+    <!-- 爱心容器 -->
+    <div id="hearts-container"></div>
+
+    <!-- 星星背景 -->
+    <div id="stars-container"></div>
+
+    <!-- 烟花容器 -->
+    <div id="fireworks-container"></div>
+
+    <!-- 步骤1: 开场页 -->
+    <div id="step1" class="step step-active">
+        <div class="step-content">
+            <div class="opening-hearts">💕</div>
+            <h1 class="opening-title">致最特别的你</h1>
+            <p class="opening-subtitle">有一份惊喜等着你...</p>
+            <div class="click-prompt">
+                <span class="click-icon">👆</span>
+                <span>点击屏幕继续</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 步骤2: 名字出现 -->
+    <div id="step2" class="step">
+        <div class="step-content">
+            <div class="name-reveal">
+                <span class="heart-left">💝</span>
+                <h1 class="big-name">邢雨欣</h1>
+                <span class="heart-right">💝</span>
+            </div>
+            <p class="name-subtitle">今天是你的特别日子</p>
+            <div class="click-prompt">
+                <span>继续点击...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 步骤3: 生日快乐文字 -->
+    <div id="step3" class="step">
+        <div class="step-content">
+            <h1 class="birthday-text">
+                <span class="bd-letter">生</span>
+                <span class="bd-letter">日</span>
+                <span class="bd-letter">快</span>
+                <span class="bd-letter">乐</span>
+            </h1>
+            <h2 class="age-text">🎂 20岁生日快乐 🎂</h2>
+            <div class="click-prompt">
+                <span>点击查看惊喜...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 步骤4: 蛋糕掉落 -->
+    <div id="step4" class="step">
+        <div class="step-content">
+            <h2 class="cake-title">🎂 生日蛋糕来啦！</h2>
+            <div class="cake-drop-area">
+                <div class="cake dropping" id="cake">
+                    <div class="candles" id="candles">
+                        <div class="candle">
+                            <div class="flame"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="flame"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="flame"></div>
+                        </div>
+                    </div>
+                    <div class="age-decoration">20</div>
+                    <div class="cake-top"></div>
+                    <div class="cake-middle"></div>
+                    <div class="cake-bottom"></div>
+                    <div class="frosting">
+                        <div class="drip"></div>
+                        <div class="drip"></div>
+                        <div class="drip"></div>
+                        <div class="drip"></div>
+                        <div class="drip"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="cake-hint">点击蛋糕许个愿望吧~</p>
+        </div>
+    </div>
+
+    <!-- 步骤5: 吹蜡烛 + 愿望 -->
+    <div id="step5" class="step">
+        <div class="step-content">
+            <div class="wish-celebration">
+                <div class="wish-emojis">
+                    <span>🎉</span><span>🎊</span><span>🎈</span><span>🎁</span><span>🎉</span>
+                </div>
+                <h1 class="wish-title">愿望会实现的！</h1>
+            </div>
+            <div class="cake-area">
+                <div class="cake-small">
+                    <div class="candles-blown">
+                        <div class="candle">
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="smoke"></div>
+                        </div>
+                    </div>
+                    <div class="age-decoration">20</div>
+                    <div class="cake-top"></div>
+                    <div class="cake-middle"></div>
+                    <div class="cake-bottom"></div>
+                </div>
+            </div>
+            <div class="click-prompt">
+                <span>点击继续...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 步骤6: 祝福语 -->
+    <div id="step6" class="step">
+        <div class="step-content final-step">
+            <h1 class="final-title">💕 邢雨欣 💕</h1>
+            <h2 class="final-subtitle">✨ 祝你20岁生日快乐 ✨</h2>
+
+            <div class="wish-card">
+                <p class="wish-text" id="typewriter"></p>
+            </div>
+
+            <div class="signature">
+                <p>—— 爱你的添水 ❤️</p>
+            </div>
+
+            <div class="final-hint">
+                <span>🎆 点击屏幕放烟花庆祝 🎆</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音乐控制 -->
+    <div class="music-controls">
+        <button id="musicBtn" class="music-btn" onclick="toggleMusic()">
+            🎹 播放音乐
+        </button>
+        <button id="switchBtn" class="switch-btn" onclick="switchSong()">
+            🎵 切换歌曲
+        </button>
+        <div class="song-name" id="songName">🎵 生日歌</div>
+    </div>
+
+    <!-- 步骤指示器 -->
+    <div class="step-indicator" id="stepIndicator">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
